@@ -45,11 +45,9 @@ You are downloading 100 files (unless you changed the `size` parameter) so be pa
 ### Exploring dataset
 
 
-| ![](images/ground_truth1.png)  |  ![](images/ground_truth2.png) |
-|:---:|:---:|
-| ![](images/ground_truth3.png)  |  ![](images/ground_truth4.png) |
-|:---:|:---:|
-| ![](images/ground_truth5.png)  |  ![](images/ground_truth6.png) |
+![](images/ground_truth1.png)    ![](images/ground_truth2.png) 
+![](images/ground_truth3.png)    ![](images/ground_truth4.png) 
+![](images/ground_truth5.png)    ![](images/ground_truth6.png) 
 
 
 
@@ -85,26 +83,12 @@ This and previous distribution show that although object center is usually in th
 
 
 ### Create the training - validation splits
-In the class, we talked about cross-validation and the importance of creating meaningful training and validation splits. For this project, you will have to create your own training and validation sets using the files located in `/home/workspace/data/waymo`. The `split` function in the `create_splits.py` file does the following:
-* create three subfolders: `/home/workspace/data/train/`, `/home/workspace/data/val/`, and `/home/workspace/data/test/`
-* split the tf records files between these three folders by symbolically linking the files from `/home/workspace/data/waymo/` to `/home/workspace/data/train/`, `/home/workspace/data/val/`, and `/home/workspace/data/test/`
 
+Split the data into 87% train, 10% validation and 3% test.
 Use the following command to run the script once your function is implemented:
 ```
 python create_splits.py --data-dir /home/workspace/data
 ```
-
-### Edit the config file
-
-Now you are ready for training. As we explain during the course, the Tf Object Detection API relies on **config files**. The config that we will use for this project is `pipeline.config`, which is the config for a SSD Resnet 50 640x640 model. You can learn more about the Single Shot Detector [here](https://arxiv.org/pdf/1512.02325.pdf).
-
-First, let's download the [pretrained model](http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz) and move it to `/home/workspace/experiments/pretrained_model/`.
-
-We need to edit the config files to change the location of the training and validation files, as well as the location of the label_map file, pretrained weights. We also need to adjust the batch size. To do so, run the following:
-```
-python edit_config.py --train_dir /home/workspace/data/train/ --eval_dir /home/workspace/data/val/ --batch_size 2 --checkpoint /home/workspace/experiments/pretrained_model/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8/checkpoint/ckpt-0 --label_map /home/workspace/experiments/label_map.pbtxt
-```
-A new config file has been created, `pipeline_new.config`.
 
 ### Training
 
