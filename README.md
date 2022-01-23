@@ -176,3 +176,16 @@ Finally, you can create a video of your model's inferences for any tf record fil
 python inference_video.py --labelmap_path label_map.pbtxt --model_path experiments/reference/exported/saved_model --tf_record_path data/waymo/test/segment-12200383401366682847_2552_140_2572_140_with_camera_labels.tfrecord --config_path experiments/reference/pipeline_new.config --output_path animation.gif
 ```
 
+## Test results
+
+![](images/animation1.gif)
+
+![](images/animation2.gif)
+
+![](images/animation4.gif)
+
+
+## Future Work
+
+1. Based on the observation of test animation, bounding box predictions are not stable in every frame (bounding box not detected for some cars in internmediate frames). One possible solution is to use a Recurrent Neural Network (RNN).
+2. More time can be spent on find the right hyperparameters. Due to very limited compute resources, this could not be done.
