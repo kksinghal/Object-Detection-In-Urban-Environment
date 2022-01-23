@@ -18,8 +18,10 @@ def split():
     # TODO: Split the data present in `/home/workspace/data/waymo/training_and_validation` into train and val sets.
     filenames = os.listdir("/home/workspace/data/waymo/training_and_validation")
 
+    #Shuffle tf records list
     np.random.shuffle(filenames)
     
+    #Train size: 90%, validation size: 10%
     train_size = int(0.9 * len(filenames))
     val_size = len(filenames) - train_size
     
@@ -28,15 +30,16 @@ def split():
     source_folder = "/home/workspace/data/waymo/training_and_validation/"
     
     train_folder = "/home/workspace/data/waymo/train/"
+    #Move training records
     for filename in train_filenames:
         shutil.move(source_folder+filename, train_folder+filename)
         
     val_folder = "/home/workspace/data/waymo/val/"
+    #Move validation records
     for filename in val_filenames:
         shutil.move(source_folder+filename, val_folder+filename)
     
-    # You should move the files rather than copy because of space limitations in the workspace.
-
+    
 if __name__ == "__main__": 
     parser = argparse.ArgumentParser(description='Split data into training / validation / testing')
     args = parser.parse_args()

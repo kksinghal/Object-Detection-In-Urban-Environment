@@ -1,5 +1,8 @@
 # Object Detection in an Urban Environment
 
+## Goal
+
+To classify and localize the cars, pedestrians and cyclists in camera input feed.
 
 ## Data
 
@@ -67,28 +70,30 @@ I have used random 30k samples from the dataset to analyse.
 
 1. Dataset is very skewed in terms of number of samples available for each class. Class 1 of cars have maximum samples. Class 4 of cyclists is very rare in the dataset, followed by Class 2 of pedestrians.
 
-![Class Distribution](images/class_count.png)
+    <img src="images/class_count.png" width=50% height=50%>
 
 
 2. Distribution of object **center** in image: Image is split into 10*10 grid
 
-![Object center distribution: Class1](images/object_center_dist1.png)
-![Object center distribution: Class2](images/object_center_dist2.png)
-![Object center distribution: Class4](images/object_center_dist4.png)
+   <img src="images/object_center_dist1.png" width=49% height=49%> <img src="images/object_center_dist2.png" width=49% height=49%>
+   <img src="images/object_center_dist4.png" width=49% height=49%>
 
 This analysis show that maximum object occur in the center, fewer on the sides, and no/less objects at the top/bottom of image. The dataset is little skewed horizontally, so, random horizontal flip should help.
 
 
+
 3. Distribution of object bounding box in image: This shows how many times an object's bounding box is present at that location. Image is split into 10*10 grid
 
-![Object bounding box distribution](images/object_bbox_dist.png)
+   <img src="images/object_bbox_dist1.png" width=49% height=49%> <img src="images/object_bbox_dist2.png" width=49% height=49%>
+   <img src="images/object_bbox_dist4.png" width=49% height=49%>
+
 
 This and previous distribution show that although object center is usually in the center of image, but it's bounding boxes sometimes cover corners of the image. Since the dist shows high values in center, it also suggests that most bounding boxes cover center of the image.
 
 
 4. Distribution of class frequency in an image
 
-![Class frequency distribution](images/class_freq_dist.png)
+   ![Class frequency distribution](images/class_freq_dist.png)
 
 
 5. Also, surfing through the dataset suggests fewer samples in darker/foggy conditions compared to day/clear conditions. So, random brightness, contrast and color shift should help.
@@ -140,6 +145,7 @@ To monitor the training, you can launch a tensorboard instance by running `pytho
 
 ### Augmentation
 
+Explored the Object Detection API and applied many different augmentations
 
 Used various augmentation strategies:
 1. random_horizontal_flip
@@ -160,9 +166,10 @@ Used various augmentation strategies:
 
 ### Experiment
 
+Used SGD with momentum. Rate decay: Cosine anealing. Changed warmup learning rate to 5e-4, warmup steps to 300 and total steps to 5000 to get the desired learning rate function.
 
-Stopped training just before our model would start overfitting. Although, training loss is still decreasing, but validation loss and mAP has plateaued. So, further training will overfit the dataset.
-Used SGD with momentum. Rate decay: Cosine anealing
+Stopped training at 3k steps just before our model would start overfitting. Although, training loss is still decreasing, but validation loss and mAP have plateaued. So, further training would overfit the dataset.
+
 
 ![Loss](images/loss.png)
 
@@ -173,7 +180,7 @@ Used SGD with momentum. Rate decay: Cosine anealing
 ![AR](images/AR.png)
 
 
-![LR](images/learning_rate.png)
+<img src="images/learning_rate.png" width=50% height=50%>
 
 
 
@@ -205,5 +212,5 @@ python inference_video.py --labelmap_path label_map.pbtxt --model_path experimen
 
 ## Future Work
 
-1. Based on the observation of test animation, bounding box predictions are not stable in every frame (bounding box not detected for some cars in internmediate frames). One possible solution is to use a Recurrent Neural Network (RNN).
+1. Based on the observation of test animation, bounding box predictions are not stable in every frame (bounding box not detected for some cars in intermediate frames). One possible solution is to use a Recurrent Neural Network (RNN).
 2. More time can be spent on find the right hyperparameters. Due to very limited compute resources, this could not be done.
