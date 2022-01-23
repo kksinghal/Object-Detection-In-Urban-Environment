@@ -1,10 +1,13 @@
 # Object Detection in an Urban Environment
 
+
 ## Data
 
 For this project, we will be using data from the [Waymo Open dataset](https://waymo.com/open/).
 
+
 ## Structure
+
 
 ### Data
 
@@ -20,13 +23,17 @@ The data we will use for training, validation and testing is organized as follow
 The `training_and_validation` folder contains file that have been downsampled: we have selected one every 10 frames from 10 fps videos. The `testing` folder contains frames from the 10 fps video without downsampling.
 
 
+
+
 ## Local Setup
 
 For local setup if you have your own Nvidia GPU, you can use the provided Dockerfile and requirements in the [build directory](./build).
 
 Follow [the README therein](./build/README.md) to create a docker container and install all prerequisites.
 
+
 ### Download and process the data
+
 
 **Note:** I used the Udacity Workspace, they already had the data processed ready to use.
 
@@ -40,16 +47,21 @@ python download_process.py --data_dir {processed_file_location} --size {number o
 You are downloading 100 files (unless you changed the `size` parameter) so be patient!
 
 
+
 ## Dataset
+
 
 ### Exploring dataset
 
-![](images/ground_truth1.png)    ![](images/ground_truth2.png) 
-![](images/ground_truth3.png)    ![](images/ground_truth4.png) 
-![](images/ground_truth5.png)    ![](images/ground_truth6.png) 
+
+| ![](images/ground_truth1.png)  |  ![](images/ground_truth2.png) |
+:-------------------------:|:-------------------------:
+| ![](images/ground_truth3.png)  |  ![](images/ground_truth4.png) |
+| ![](images/ground_truth5.png)  |  ![](images/ground_truth6.png) |
 
 
 ### Analysis
+
 
 I have used random 30k samples from the dataset to analyse.
 
@@ -60,7 +72,9 @@ I have used random 30k samples from the dataset to analyse.
 
 2. Distribution of object **center** in image: Image is split into 10*10 grid
 
-![Object center distribution](images/object_center_dist.png)
+![Object center distribution: Class1](images/object_center_dist1.png)
+![Object center distribution: Class2](images/object_center_dist2.png)
+![Object center distribution: Class4](images/object_center_dist4.png)
 
 This analysis show that maximum object occur in the center, fewer on the sides, and no/less objects at the top/bottom of image. The dataset is little skewed horizontally, so, random horizontal flip should help.
 
@@ -90,6 +104,7 @@ python create_splits.py --data-dir /home/workspace/data
 
 ### The config file
 
+
 The config that we will use for this project is `pipeline.config`, which is the config for a SSD Resnet 50 640x640 model. You can learn more about the Single Shot Detector [here](https://arxiv.org/pdf/1512.02325.pdf).
 
 First, let's download the [pretrained model](http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz) and move it to `/home/workspace/experiments/pretrained_model/`.
@@ -103,6 +118,7 @@ A new config file has been created, `pipeline_new.config`.
 
 
 ### Training
+
 
 Model and training hyperparameters are defined using a file, pipeline_new.config.
 You can make changes in this config file, then move the `pipeline_new.config` to the `/home/workspace/experiments/reference` folder. Now launch the training process:
@@ -124,6 +140,7 @@ To monitor the training, you can launch a tensorboard instance by running `pytho
 
 ### Augmentation
 
+
 Used various augmentation strategies:
 1. random_horizontal_flip
 2. random_crop_image
@@ -133,36 +150,37 @@ Used various augmentation strategies:
 6. random_adjust_saturation
 7. random_distort_color
 
-![](images/augmented1.png)    ![](images/augmented2.png) 
-![](images/augmented3.png)    ![](images/augmented4.png) 
-![](images/augmented5.png)    ![](images/augmented6.png) 
+
+| ![](images/augmented1.png)  |  ![](images/augmented3.png) |
+:-------------------------:|:-------------------------:
+| ![](images/augmented3.png)  |  ![](images/augmented4.png) |
+| ![](images/augmented5.png)  |  ![](images/augmented6.png) |
+
 
 
 ### Experiment
 
+
 Stopped training just before our model would start overfitting. Although, training loss is still decreasing, but validation loss and mAP has plateaued. So, further training will overfit the dataset.
+Used SGD with momentum. Rate decay: Cosine anealing
 
 ![Loss](images/loss.png)
-*Loss vs steps*
 
 
 ![mAP](images/AP.png)
-*AP vs steps*
 
 
 ![AR](images/AR.png)
-*AR vs steps*
 
 
-Used SGD with momentum. Rate decay: Cosine anealing
-
-![AR](images/AR.png)
-*Learning rate vs steps*
+![LR](images/learning_rate.png)
 
 
 
 ### Creating an animation
+
 #### Export the trained model
+
 Modify the arguments of the following function to adjust it to your models:
 
 ```
@@ -182,7 +200,7 @@ python inference_video.py --labelmap_path label_map.pbtxt --model_path experimen
 
 ![](images/animation2.gif)
 
-![](images/animation4.gif)
+![](images/animation3.gif)
 
 
 ## Future Work
